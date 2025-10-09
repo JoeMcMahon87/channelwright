@@ -1,0 +1,54 @@
+# Channel templates for campaign creation
+# Each template defines the channels to create for a new campaign
+
+default_template:
+  channels:
+    # Public campaign channels (accessible to campaign members)
+    - name: "general"
+      type: "text"
+      private: false
+      description: "General discussion for the campaign"
+      
+    - name: "character-sheets"
+      type: "forum"
+      private: false
+      description: "Share and discuss character sheets"
+      
+    - name: "session-recaps"
+      type: "forum"
+      private: false
+      description: "Post session summaries and recaps"
+      
+    - name: "voice-chat"
+      type: "voice"
+      private: false
+      description: "Voice channel for game sessions"
+      
+    # Private GM channels (guild owner and GM role only)
+    - name: "gm-notes"
+      type: "text"
+      private: true
+      description: "Private GM planning and notes"
+      
+    - name: "gm-resources"
+      type: "forum"
+      private: true
+      description: "GM-only resources and discussions"
+
+# Alternative template for smaller campaigns
+minimal_template:
+  channels:
+    - name: "campaign-chat"
+      type: "text"
+      private: false
+      description: "Main campaign discussion"
+      
+    - name: "voice-session"
+      type: "voice"
+      private: false
+      description: "Game session voice channel"
+      
+    - name: "gm-planning"
+      type: "text"
+      private: true
+      description: "GM planning space"

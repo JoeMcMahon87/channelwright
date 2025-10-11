@@ -1,1 +1,0 @@
-# ChannelWright Discord Bot Package

@@ -1,88 +1,69 @@
 #!/bin/bash
-
-# Deployment script for ChannelWright Discord bot
 set -e
 
-# Configuration
-ENVIRONMENT=${1:-dev}
-AWS_REGION=${AWS_REGION:-us-east-1}
-
-echo "🚀 Deploying ChannelWright to environment: $ENVIRONMENT"
-
-# Check prerequisites
-echo "🔍 Checking prerequisites..."
-
-if ! command -v terraform &> /dev/null; then
-    echo "❌ Terraform is not installed. Please install Terraform first."
+# Load environment variables
+if [ -f .env ]; then
+    export $(cat .env | grep -v '^#' | xargs)
+else
+    echo "Error: .env file not found. Copy .env.example to .env and configure it."
     exit 1
 fi
 
-if ! command -v aws &> /dev/null; then
-    echo "❌ AWS CLI is not installed. Please install AWS CLI first."
+# Validate required variables
+if [ -z "$LAMBDA_FUNCTION_NAME" ] || [ -z "$AWS_REGION" ]; then
+    echo "Error: LAMBDA_FUNCTION_NAME and AWS_REGION must be set in .env"
     exit 1
 fi
 
-# Check AWS credentials
-if ! aws sts get-caller-identity &> /dev/null; then
-    echo "❌ AWS credentials not configured. Please run 'aws configure' first."
-    exit 1
+echo "🚀 Deploying HelloBot to AWS Lambda..."
+
+# Create deployment package
+echo "📦 Creating deployment package..."
+cd src
+
+# Install dependencies for Lambda's Linux environment
+pip install -r ../requirements.txt \
+    --platform manylinux2014_x86_64 \
+    --target . \
+    --implementation cp \
+    --python-version 3.11 \
+    --only-binary=:all: \
+    --upgrade
+
+zip -r ../deployment.zip . -x "*.pyc" -x "__pycache__/*"
+cd ..
+
+# Check if Lambda function exists
+if aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" --region "$AWS_REGION" 2>/dev/null; then
+    echo "📝 Updating existing Lambda function..."
+    aws lambda update-function-code \
+        --function-name "$LAMBDA_FUNCTION_NAME" \
+        --zip-file fileb://deployment.zip \
+        --region "$AWS_REGION"
+    
+    # Update environment variables
+    aws lambda update-function-configuration \
+        --function-name "$LAMBDA_FUNCTION_NAME" \
+        --environment "Variables={DISCORD_PUBLIC_KEY=$DISCORD_PUBLIC_KEY}" \
+        --region "$AWS_REGION"
+else
+    echo "✨ Creating new Lambda function..."
+    aws lambda create-function \
+        --function-name "$LAMBDA_FUNCTION_NAME" \
+        --runtime python3.11 \
+        --role "arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/lambda-execution-role" \
+        --handler bot.lambda_handler \
+        --zip-file fileb://deployment.zip \
+        --environment "Variables={DISCORD_PUBLIC_KEY=$DISCORD_PUBLIC_KEY}" \
+        --region "$AWS_REGION"
 fi
 
-# Check for required environment variables
-if [ -z "$DISCORD_BOT_TOKEN" ]; then
-    echo "❌ DISCORD_BOT_TOKEN environment variable is required."
-    echo "   Please set it with: export DISCORD_BOT_TOKEN=your_token_here"
-    exit 1
-fi
-
-if [ -z "$DISCORD_APPLICATION_ID" ]; then
-    echo "❌ DISCORD_APPLICATION_ID environment variable is required."
-    echo "   Please set it with: export DISCORD_APPLICATION_ID=your_app_id_here"
-    exit 1
-fi
-
-# Build the deployment package
-echo "🔨 Building deployment package..."
-./scripts/build.sh
-
-# Deploy with Terraform
-echo "🏗️  Deploying infrastructure..."
-cd terraform
-
-# Initialize Terraform
-terraform init
-
-# Plan the deployment
-echo "📋 Planning deployment..."
-terraform plan \
-    -var="environment=$ENVIRONMENT" \
-    -var="discord_bot_token=$DISCORD_BOT_TOKEN" \
-    -var="discord_application_id=$DISCORD_APPLICATION_ID" \
-    -var="aws_region=$AWS_REGION" \
-    -out=tfplan
-
-# Apply the deployment
-echo "🚀 Applying deployment..."
-terraform apply tfplan
-
-# Get outputs
-echo "📊 Deployment outputs:"
-LAMBDA_URL=$(terraform output -raw lambda_function_url)
-LAMBDA_NAME=$(terraform output -raw lambda_function_name)
+# Clean up
+rm deployment.zip
 
 echo "✅ Deployment complete!"
 echo ""
-echo "📋 Deployment Summary:"
-echo "   Environment: $ENVIRONMENT"
-echo "   Region: $AWS_REGION"
-echo "   Lambda Function: $LAMBDA_NAME"
-echo "   Webhook URL: $LAMBDA_URL"
-echo ""
-echo "🔗 Next Steps:"
-echo "   1. Configure Discord webhook URL: $LAMBDA_URL"
-echo "   2. Invite bot to your Discord server"
-echo "   3. Test the /begin-campaign command"
-echo ""
-echo "📚 For more information, see docs/setup.md"
-
-cd - > /dev/null
+echo "Next steps:"
+echo "1. Create an API Gateway endpoint pointing to this Lambda function"
+echo "2. Set the Interactions Endpoint URL in Discord Developer Portal"
+echo "3. Run: python scripts/register_commands.py"

@@ -5,9 +5,7 @@ A simple Discord bot using the `discord-interactions` library that responds to `
 ## Features
 
 - **Serverless Architecture**: Runs on AWS Lambda for cost-effective hosting
-- **Slash Commands**: 
-  - `/hellobot` - Bot replies with "Hello {username}! 👋"
-  - `/add-campaign <name>` - Creates a complete campaign setup with category, role, and channels
+- **Simple Slash Command**: `/hellobot` - Bot replies with "Hello {username}! 👋"
 - **Discord Interactions**: Uses official Discord interactions for fast, reliable responses
 - **Easy Deployment**: Simple scripts for local testing and AWS deployment
 
@@ -104,10 +102,7 @@ This registers the `/hellobot` command with Discord. Commands may take a few min
 
 1. Go to "OAuth2" → "URL Generator" in Discord Developer Portal
 2. Select scopes: `bot`, `applications.commands`
-3. Select bot permissions: 
-   - `Send Messages`
-   - `Manage Channels` (required for `/add-campaign`)
-   - `Manage Roles` (required for `/add-campaign`)
+3. Select bot permissions: `Send Messages`
 4. Copy the generated URL and open it in a browser
 5. Select a server and authorize the bot
 
@@ -115,7 +110,6 @@ This registers the `/hellobot` command with Discord. Commands may take a few min
 
 Once deployed and configured, use the bot in Discord:
 
-### /hellobot
 ```
 /hellobot
 ```
@@ -124,56 +118,6 @@ The bot will respond with:
 ```
 Hello YourUsername! 👋
 ```
-
-### /add-campaign
-```
-/add-campaign name: My Campaign
-```
-
-The bot will create a complete campaign setup asynchronously:
-1. **Channel Category** with the campaign name
-2. **Role** named "[Campaign Name] Members"
-3. **Default Channels** (configured in `config/campaign_channels.yaml`):
-   - **Text Channels**: general, session-notes
-   - **Forum Channels**: character-sheets, lore-and-worldbuilding
-   - **Voice Channels**: voice-chat
-   - **GM-Only Channels** 🔒: gm-notes (text), gm-planning (forum)
-
-**Channel Permissions:**
-- Regular channels: Visible to campaign role members
-- GM-only channels 🔒: Visible only to:
-  - Guild owner
-  - Administrator roles
-  - "GM" role (if it exists)
-
-**Initial Response:**
-The bot will show a "thinking" indicator while creating channels.
-
-**Follow-up Message (after creation completes):**
-```
-✅ Campaign Created: My Campaign
-
-**Role:** My Campaign Members
-
-**Channels:**
-📝 Text:
-  • general
-  • session-notes
-  • gm-notes 🔒
-🔊 Voice:
-  • voice-chat
-💬 Forum:
-  • character-sheets
-  • lore-and-worldbuilding
-  • gm-planning 🔒
-```
-
-**Note**: 
-- The bot needs "Manage Channels" and "Manage Roles" permissions
-- Creating 10+ channels takes 5-6 seconds, so Discord may show "The application did not respond" warning
-- **This is normal** - the channels are still created successfully, just check your server!
-- You can customize channels by editing `config/campaign_channels.yaml`
-- GM-only channels (marked 🔒) require manual permission setup - see `GM_CHANNELS_SETUP.md`
 
 ## How It Works
 

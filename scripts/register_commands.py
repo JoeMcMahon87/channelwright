@@ -8,31 +8,18 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-DISCORD_APP_ID = os.environ.get('DISCORD_APPLICATION_ID')
+DISCORD_APP_ID = os.environ.get('DISCORD_APP_ID')
 DISCORD_BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN')
 
 # Discord API endpoint for global commands
 url = f"https://discord.com/api/v10/applications/{DISCORD_APP_ID}/commands"
 
-# Define the commands
+# Define the /hellobot command
 commands = [
     {
         "name": "hellobot",
         "description": "Get a friendly hello from the bot!",
         "type": 1  # CHAT_INPUT
-    },
-    {
-        "name": "add-campaign",
-        "description": "Create a new campaign channel category",
-        "type": 1,  # CHAT_INPUT
-        "options": [
-            {
-                "name": "name",
-                "description": "The name of the campaign",
-                "type": 3,  # STRING
-                "required": True
-            }
-        ]
     }
 ]
 

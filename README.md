@@ -1,27 +1,54 @@
-# HelloBot - Discord Interactions Bot
+# Channelwright - Discord Campaign Manager Bot
 
-A simple Discord bot using the `discord-interactions` library that responds to `/hellobot` with a personalized greeting.
+A Discord bot that creates and manages campaign channels with roles, using AWS Lambda and SQS for scalable, async operations.
 
 ## Features
 
-- **Serverless Architecture**: Runs on AWS Lambda for cost-effective hosting
-- **Simple Slash Command**: `/hellobot` - Bot replies with "Hello {username}! 👋"
-- **Discord Interactions**: Uses official Discord interactions for fast, reliable responses
-- **Easy Deployment**: Simple scripts for local testing and AWS deployment
+- **Campaign Management**: Create complete campaign setups with one command
+- **Async Channel Creation**: Uses SQS for reliable, progress-tracked channel creation
+- **Configurable Channels**: YAML-based channel configuration
+- **Role Management**: Automatic role creation with proper permissions
+- **Progress Updates**: Real-time progress bars during campaign creation
+- **Campaign Deletion**: Clean removal of campaigns and all associated resources
+- **Serverless Architecture**: Runs on AWS Lambda with SQS for cost-effective hosting
+
+## Commands
+
+- `/add-campaign name:<name>` - Create a new campaign with channels and role
+- `/delete-campaign name:<name>` - Delete a campaign and all its channels
 
 ## Project Structure
 
+See [LAMBDA_LAYER_ARCHITECTURE.md](LAMBDA_LAYER_ARCHITECTURE.md) for detailed documentation.
+
 ```
-hellobot/
-├── src/
-│   └── bot.py                 # Main Lambda handler
+channelwright/
+├── src/                       # 📦 Application Code (12 KB)
+│   ├── channelwright/        # Application module
+│   │   ├── bot.py           # Bot logic
+│   │   ├── worker.py        # SQS worker
+│   │   └── campaign_config.py
+│   ├── bot.py               # Lambda handler (main)
+│   └── worker.py            # Lambda handler (worker)
+│
+├── lambda-layer/              # 📚 Dependencies (20 MB)
+│   └── python/               # Lambda layer format
+│       ├── boto3/
+│       ├── requests/
+│       └── [other packages]
+│
+├── config/
+│   └── campaign_channels.yaml # Channel definitions
+│
+├── infrastructure/
+│   └── sqs-worker.yaml       # CloudFormation template
+│
 ├── scripts/
-│   ├── register_commands.py   # Register slash commands with Discord
-│   ├── deploy.sh              # Deploy to AWS Lambda
-│   └── test_local.py          # Local testing script
-├── requirements.txt           # Python dependencies
-├── .env.example              # Environment variable template
-└── README.md                 # This file
+│   ├── build-layer.sh        # Build Lambda layer
+│   ├── deploy-with-layer.sh  # Deploy with layer
+│   └── register_commands.py  # Register Discord commands
+│
+└── requirements.txt          # Python dependencies
 ```
 
 ## Prerequisites

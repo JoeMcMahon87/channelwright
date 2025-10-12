@@ -62,11 +62,19 @@ channelwright.zip
 # Lambda deployment packages
 lambda-deployment-*.zip
 deployment-*.zip
+lambda-layer.zip
+
+# Lambda layer directory (dependencies)
+lambda-layer/
 
 # Temporary build directories
 .build/
 tmp/
 temp/
+
+# Copied config in src (deployed to Lambda)
+src/config/
+src/channelwright/config/
 
 # =============================================================================
 # PYTHON FILES

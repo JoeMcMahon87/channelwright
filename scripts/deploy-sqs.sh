@@ -19,11 +19,32 @@ if [ -z "$LAMBDA_FUNCTION_NAME" ] || [ -z "$AWS_REGION" ] || [ -z "$DISCORD_BOT_
 fi
 
 echo "📦 Step 1: Creating deployment package..."
+
+# Copy config to channelwright module
+echo "Copying config directory to channelwright module..."
+cp -r config src/channelwright/
+
+# Clean up any existing packages
+echo "Cleaning up old packages..."
 cd src
-pip install -r ../requirements.txt -t . --upgrade
-zip -r ../deployment.zip . -x "*.pyc" -x "__pycache__/*"
+find . -type d -name "*.dist-info" -exec rm -rf {} + 2>/dev/null || true
+find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+rm -rf nacl/ cffi/ pycparser/ _cffi_backend*.so boto* dateutil/ jmespath* s3transfer* six* urllib3* certifi* charset_normalizer* idna* requests* yaml* discord_interactions* python_dotenv* 2>/dev/null || true
+
+# Install packages for Lambda compatibility (manylinux2014)
+echo "Installing packages for Lambda runtime (Python 3.11, manylinux2014)..."
+pip3 install -r ../requirements.txt -t . \
+    --platform manylinux2014_x86_64 \
+    --only-binary=:all: \
+    --python-version 311 \
+    --implementation cp \
+    --abi cp311 \
+    --upgrade
+
+# Create deployment package
+echo "Creating deployment package..."
+zip -r ../deployment.zip . -x "*.pyc" -x "__pycache__/*" -x "channelwright/__pycache__/*"
 cd ..
-zip -ur deployment.zip config/
 
 echo ""
 echo "🔧 Step 2: Creating/Updating SQS Queue and Worker Lambda..."

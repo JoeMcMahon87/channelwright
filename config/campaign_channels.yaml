@@ -1,0 +1,61 @@
+# Campaign Channel Configuration
+# This file defines the default channels created for each campaign
+
+channels:
+  # Text Channels
+  - name: general-discussion
+    type: text
+    gm_only: false
+    description: General campaign discussion
+  
+  - name: session-recaps
+    type: text
+    gm_only: false
+    description: Notes and summaries from game sessions
+  
+  - name: gm-notes
+    type: text
+    gm_only: true
+    description: Private GM notes and planning
+  
+  # Voice Channels
+  - name: campaign-main
+    type: voice
+    gm_only: false
+    description: Voice channel for game sessions
+  
+  # Forum Channels
+  - name: characters-and-npcs
+    type: forum
+    gm_only: false
+    description: Post and discuss character and NPCs sheets and info
+  
+  - name: campaign-lore
+    type: forum
+    gm_only: false
+    description: Discuss campaign lore and world details
+  
+  - name: gm-planning
+    type: forum
+    gm_only: true
+    description: GM-only planning and preparation
+
+  - name: maps-and-visuals
+    type: text
+    gm_only: false
+    description: Post and discuss campaign maps and visuals
+
+  - name: session-zero
+    type: text
+    gm_only: false
+    description: Post and discuss session zero details
+
+  - name: safety
+    type: text
+    gm_only: false
+    description: Post and discuss safety and rules details
+
+  - name: dice-rolls
+    type: text
+    gm_only: false
+    description: Campaign dice rolls and results

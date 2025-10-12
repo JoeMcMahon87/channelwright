@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SQS Queue and Worker Lambda for Channel Creation'
+
+Parameters:
+  DiscordBotToken:
+    Type: String
+    NoEcho: true
+    Description: Discord Bot Token
+  
+  MainLambdaArn:
+    Type: String
+    Description: ARN of the main Lambda function
+
+Resources:
+  # SQS Queue for channel creation tasks
+  ChannelCreationQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: channelwright-tasks
+      VisibilityTimeout: 60
+      MessageRetentionPeriod: 3600
+      ReceiveMessageWaitTimeSeconds: 20
+      Tags:
+        - Key: Project
+          Value: Channelwright
+        - Key: Purpose
+          Value: AsyncChannelCreation
+
+  # Dead Letter Queue for failed messages
+  ChannelCreationDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: channelwright-tasks-dlq
+      MessageRetentionPeriod: 1209600  # 14 days
+      Tags:
+        - Key: Project
+          Value: Channelwright
+
+  # Worker Lambda Function
+  WorkerLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: discord_channelwright_worker
+      Runtime: python3.11
+      Handler: worker.lambda_handler
+      Role: !GetAtt WorkerLambdaExecutionRole.Arn
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          DISCORD_BOT_TOKEN: !Ref DiscordBotToken
+      Code:
+        ZipFile: |
+          def lambda_handler(event, context):
+              return {'statusCode': 200}
+      Tags:
+        - Key: Project
+          Value: Channelwright
+
+  # Event Source Mapping - SQS to Worker Lambda
+  WorkerEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      EventSourceArn: !GetAtt ChannelCreationQueue.Arn
+      FunctionName: !Ref WorkerLambdaFunction
+      BatchSize: 1
+      Enabled: true
+
+  # IAM Role for Worker Lambda
+  WorkerLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: channelwright-worker-lambda-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: SQSAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                Resource: !GetAtt ChannelCreationQueue.Arn
+      Tags:
+        - Key: Project
+          Value: Channelwright
+
+Outputs:
+  QueueUrl:
+    Description: URL of the SQS Queue
+    Value: !Ref ChannelCreationQueue
+    Export:
+      Name: ChannelwrightQueueUrl
+  
+  QueueArn:
+    Description: ARN of the SQS Queue
+    Value: !GetAtt ChannelCreationQueue.Arn
+    Export:
+      Name: ChannelwrightQueueArn
+  
+  WorkerLambdaArn:
+    Description: ARN of the Worker Lambda Function
+    Value: !GetAtt WorkerLambdaFunction.Arn
+    Export:
+      Name: ChannelwrightWorkerLambdaArn

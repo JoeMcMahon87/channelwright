@@ -121,10 +121,25 @@ Hello YourUsername! 👋
 
 ## How It Works
 
+### SQS-Based Async Architecture
+
 1. **Discord Interactions**: Discord sends HTTP POST requests to your API Gateway endpoint
-2. **Lambda Handler**: AWS Lambda receives the request and processes it
-3. **Verification**: The `discord-interactions` library verifies the request signature
-4. **Response**: Bot returns a JSON response that Discord displays to the user
+2. **Main Lambda**: Receives request, creates role & category, queues tasks to SQS
+3. **Deferred Response**: Returns type 5 immediately (< 1 second) - no timeout!
+4. **SQS Queue**: Stores channel creation tasks for async processing
+5. **Worker Lambda**: Processes tasks one by one, creates channels
+6. **Progress Updates**: Worker edits original message with progress bar
+7. **Completion**: Final message shows all created channels
+
+**Note:** 
+- The bot needs "Manage Channels" and "Manage Roles" permissions
+- Uses **SQS-based async architecture** for instant responses (< 1 second)
+- Shows **real-time progress bar** as channels are created
+- No timeout warnings! 
+- You can customize channels by editing `config/campaign_channels.yaml`
+- GM-only channels (marked ) require manual permission setup - see `GM_CHANNELS_SETUP.md`
+
+**Quick Start:** See `QUICKSTART_SQS.md` for deployment instructions for deployment guide and `SQS_ARCHITECTURE.md` for technical details.**
 
 ### Key Components
 

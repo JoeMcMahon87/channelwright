@@ -8,7 +8,7 @@ nacl/__pycache__/public.cpython-312.pyc,,
 nacl/__pycache__/secret.cpython-312.pyc,,
 nacl/__pycache__/signing.cpython-312.pyc,,
 nacl/__pycache__/utils.cpython-312.pyc,,
-nacl/_sodium.abi3.so,sha256=EIATBcae7G7Up30LGGyPfGcDxdZg4Jglow_HyB5dYv4,5312848
+nacl/_sodium.abi3.so,sha256=REmgGDaUByxq-zFVnDTueF-CiDGbKL5kjsETxozztpA,3715008
 nacl/bindings/__init__.py,sha256=_CUNAcr2XgHQUklv8HBqb9qdHzVDWWINRhxhQ48N7uU,19083
 nacl/bindings/__pycache__/__init__.cpython-312.pyc,,
 nacl/bindings/__pycache__/crypto_aead.cpython-312.pyc,,
@@ -63,6 +63,6 @@ nacl/utils.py,sha256=gmlTD1x9ZNwzHd8LpALH1CHud-Htv8ejRb3y7TyS9f0,2341
 pynacl-1.6.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
 pynacl-1.6.0.dist-info/METADATA,sha256=xcp6v1d4C5emfPh2gRy8sYBSdXav0fYEgD-giV3a8EM,9434
 pynacl-1.6.0.dist-info/RECORD,,
-pynacl-1.6.0.dist-info/WHEEL,sha256=0Zw7K8puSUInnHEXSY-IpPVuRVDZvoihWE2eMtwVJJ0,147
+pynacl-1.6.0.dist-info/WHEEL,sha256=AlUJTdgEknB3JhEr75wCJwOp39psZrZjhAmgNRQHJmc,111
 pynacl-1.6.0.dist-info/licenses/LICENSE,sha256=0xdK1j5yHUydzLitQyCEiZLTFDabxGMZcgtYAskVP-k,9694
 pynacl-1.6.0.dist-info/top_level.txt,sha256=wfdEOI_G2RIzmzsMyhpqP17HUh6Jcqi99to9aHLEslo,13

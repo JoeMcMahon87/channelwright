@@ -1,0 +1,29 @@
+Channelwright - Discord Campaign Manager Bot
+Copyright (C) 2025 Joe McMahon
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Additional terms under Section 7(b) of the GNU General Public License v3
+------------------------------------------------------------------------
+
+As permitted by Section 7(b) of the GPLv3, the following additional
+term applies to this program:
+
+  Any copy, modified version, or derivative work of this program must
+  preserve the copyright notice above and must include the following
+  author attribution in its documentation (such as a README) and, if
+  it has one, in its "about" or credits information:
+
+    Based on Channelwright by Joe McMahon
+    https://github.com/JoeMcMahon87/channelwright

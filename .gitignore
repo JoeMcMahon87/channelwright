@@ -166,6 +166,9 @@ log/
 # PyCharm
 .idea/
 
+# Serena
+.serena/
+
 # Sublime Text
 *.sublime-project
 *.sublime-workspace

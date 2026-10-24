@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Match the Lambda runtime (python3.11)
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Lint (ruff)
+        run: ruff check src scripts tests
+
+      - name: Test (pytest)
+        run: pytest --cov=channelwright --cov-report=term-missing --cov-report=xml
+
+  infrastructure:
+    name: Lint scripts and CloudFormation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install cfn-lint
+        run: pip install cfn-lint
+
+      # shellcheck is preinstalled on ubuntu-latest
+      - name: Lint shell scripts (shellcheck)
+        run: shellcheck --severity=error scripts/*.sh
+
+      - name: Lint CloudFormation template (cfn-lint)
+        run: cfn-lint --non-zero-exit-code error infrastructure/sqs-worker.yaml

@@ -1,5 +1,13 @@
 # Channelwright - Discord Campaign Manager Bot
 
+[![CI](https://github.com/JoeMcMahon87/channelwright/actions/workflows/ci.yml/badge.svg)](https://github.com/JoeMcMahon87/channelwright/actions/workflows/ci.yml)
+[![License: GPL v3](https://img.shields.io/github/license/JoeMcMahon87/channelwright)](LICENSE)
+![Python 3.11](https://img.shields.io/badge/python-3.11-blue?logo=python&logoColor=white)
+![AWS Lambda](https://img.shields.io/badge/AWS-Lambda%20%2B%20SQS-FF9900?logo=awslambda&logoColor=white)
+![Discord](https://img.shields.io/badge/Discord-slash%20commands-5865F2?logo=discord&logoColor=white)
+[![Last commit](https://img.shields.io/github/last-commit/JoeMcMahon87/channelwright)](https://github.com/JoeMcMahon87/channelwright/commits/main)
+[![Open issues](https://img.shields.io/github/issues/JoeMcMahon87/channelwright)](https://github.com/JoeMcMahon87/channelwright/issues)
+
 A Discord bot that creates and manages campaign channels with roles, using AWS Lambda and SQS for scalable, async operations.
 
 ## Features

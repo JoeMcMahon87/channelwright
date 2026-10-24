@@ -96,7 +96,7 @@ cp -r config src/channelwright/
 pip3 install -r requirements.txt -t src/ \
     --platform manylinux2014_x86_64 \
     --only-binary=:all: \
-    --python-version 311
+    --python-version 313
 ```
 
 ### 4. Create Deployment Package

@@ -26,7 +26,7 @@ pip install -r ../requirements.txt \
     --platform manylinux2014_x86_64 \
     --target . \
     --implementation cp \
-    --python-version 3.11 \
+    --python-version 3.13 \
     --only-binary=:all: \
     --upgrade
 
@@ -50,7 +50,7 @@ else
     echo "✨ Creating new Lambda function..."
     aws lambda create-function \
         --function-name "$LAMBDA_FUNCTION_NAME" \
-        --runtime python3.11 \
+        --runtime python3.13 \
         --role "arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/lambda-execution-role" \
         --handler bot.lambda_handler \
         --zip-file fileb://deployment.zip \

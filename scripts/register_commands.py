@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-DISCORD_APPLICATION_ID = os.environ.get('DISCORD_APPLICATION_ID')
+DISCORD_APP_ID = os.environ.get('DISCORD_APP_ID')
 DISCORD_BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN')
 
 # Discord API endpoint for global commands
-url = f"https://discord.com/api/v10/applications/{DISCORD_APPLICATION_ID}/commands"
+url = f"https://discord.com/api/v10/applications/{DISCORD_APP_ID}/commands"
 
 # Define commands
 commands = [

@@ -70,8 +70,9 @@ echo "Attaching layer to main Lambda..."
 aws lambda update-function-configuration \
     --function-name $LAMBDA_FUNCTION_NAME \
     --layers $LAYER_ARN \
+    --runtime python3.13 \
     --region $AWS_REGION \
-    --query '{FunctionName:FunctionName,Layers:Layers[*].Arn}' \
+    --query '{FunctionName:FunctionName,Runtime:Runtime,Layers:Layers[*].Arn}' \
     --output json
 
 # Update worker Lambda
@@ -95,8 +96,9 @@ echo "Attaching layer to worker Lambda..."
 aws lambda update-function-configuration \
     --function-name discord_channelwright_worker \
     --layers $LAYER_ARN \
+    --runtime python3.13 \
     --region $AWS_REGION \
-    --query '{FunctionName:FunctionName,Layers:Layers[*].Arn}' \
+    --query '{FunctionName:FunctionName,Runtime:Runtime,Layers:Layers[*].Arn}' \
     --output json
 
 echo ""

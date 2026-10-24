@@ -77,7 +77,7 @@ arn:aws:lambda:us-east-1:296866391268:layer:channelwright-dependencies:1
 ```
 
 ### Compatible Runtimes
-- Python 3.11
+- Python 3.13
 
 ### Contents
 All Python dependencies from `requirements.txt`:
@@ -107,22 +107,12 @@ The `python/` directory is required by AWS Lambda. When the layer is attached, L
 
 ### Initial Setup (One Time)
 
-1. **Install Dependencies**
-   ```bash
-   pip3 install -r requirements.txt -t lambda-layer/python/ \
-       --platform manylinux2014_x86_64 \
-       --only-binary=:all: \
-       --python-version 311 \
-       --implementation cp \
-       --abi cp311
-   ```
-
-2. **Build and Publish Layer**
+1. **Build and Publish Layer**
    ```bash
    ./scripts/build-layer.sh
    ```
    
-   This creates `lambda-layer.zip` and publishes it to AWS as version 1.
+   This installs `requirements.txt` into `lambda-layer/python/` for Python 3.13, creates `lambda-layer.zip` and publishes it to AWS as a new layer version.
 
 ### Regular Deployments
 
@@ -269,14 +259,7 @@ aws lambda update-function-configuration \
 ### Adding New Dependencies
 
 1. Add to `requirements.txt`
-2. Install to layer:
-   ```bash
-   pip3 install -r requirements.txt -t lambda-layer/python/ \
-       --platform manylinux2014_x86_64 \
-       --only-binary=:all: \
-       --python-version 311
-   ```
-3. Rebuild layer:
+2. Rebuild layer (reinstalls everything in `requirements.txt`):
    ```bash
    ./scripts/build-layer.sh
    ```

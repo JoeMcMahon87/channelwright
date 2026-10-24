@@ -32,13 +32,13 @@ find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 rm -rf nacl/ cffi/ pycparser/ _cffi_backend*.so boto* dateutil/ jmespath* s3transfer* six* urllib3* certifi* charset_normalizer* idna* requests* yaml* discord_interactions* python_dotenv* 2>/dev/null || true
 
 # Install packages for Lambda compatibility (manylinux2014)
-echo "Installing packages for Lambda runtime (Python 3.11, manylinux2014)..."
+echo "Installing packages for Lambda runtime (Python 3.13, manylinux2014)..."
 pip3 install -r ../requirements.txt -t . \
     --platform manylinux2014_x86_64 \
     --only-binary=:all: \
-    --python-version 311 \
+    --python-version 313 \
     --implementation cp \
-    --abi cp311 \
+    --abi cp313 \
     --upgrade
 
 # Create deployment package
@@ -134,10 +134,11 @@ aws lambda update-function-code \
 # Update main Lambda environment variables
 aws lambda update-function-configuration \
     --function-name $LAMBDA_FUNCTION_NAME \
+    --runtime python3.13 \
     --environment "Variables={DISCORD_PUBLIC_KEY=$DISCORD_PUBLIC_KEY,DISCORD_BOT_TOKEN=$DISCORD_BOT_TOKEN,SQS_QUEUE_URL=$QUEUE_URL}" \
     --timeout 30 \
     --region $AWS_REGION \
-    --query '{FunctionName: FunctionName, Timeout: Timeout}' \
+    --query '{FunctionName: FunctionName, Runtime: Runtime, Timeout: Timeout}' \
     --output json
 
 echo ""

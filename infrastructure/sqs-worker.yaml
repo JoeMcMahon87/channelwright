@@ -41,7 +41,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: discord_channelwright_worker
-      Runtime: python3.11
+      Runtime: python3.13
       Handler: worker.lambda_handler
       Role: !GetAtt WorkerLambdaExecutionRole.Arn
       Timeout: 30
